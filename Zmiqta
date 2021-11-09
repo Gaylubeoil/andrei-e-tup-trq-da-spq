@@ -2,8 +2,8 @@
 #include <iostream>
 #include <windows.h>
 using namespace std;
-const int width = 20;
-const int height = 20;
+const int width = 22;
+const int height = 22;
 int x, y, FX, FY, score;
 int tailX[100], tailY[100];
 int nTail;
@@ -32,9 +32,9 @@ void Nigger()
 void Draw()
 {
 	system("cls");
-	cout << "---------------" << endl;
-	cout << "--Lobo i Andi--" << endl << "-Big time zmiq-" << endl;
-	cout << "---------------" << endl;
+	cout << "-------------------" << endl;
+	cout << "----Lobo i Andi----" << endl << "---Big time zmiq---" << endl;
+	cout << "-------------------" << endl;
 	for (int i = 0; i < width; i++)
 	{
 		cout << "0";
@@ -80,8 +80,8 @@ void Draw()
 		cout << "0";
 	}
 	cout << endl << "WASD to move, X to end game!";
-	cout << endl << "Your score is: " << score << endl;
-	cout << "Fruit X: "<<  FX << endl << "Fruit Y: " << FY << endl;
+	cout << endl << "Your score is: " << score << "! "<< endl;
+	cout << "Fruit X: "<<  FX << ". " << endl << "Fruit Y: " << FY << ". " << endl;
 	
 }
 void Input()
@@ -104,6 +104,8 @@ void Input()
 			break;
 		case 'x': gameOver = true;
 			break;
+		//case 'p': dir = STOP;
+			//break;
 		}
 	}
 }
@@ -123,7 +125,7 @@ void Logic()
 		prevX = prev2X;
 		prevY = prev2Y;
 	}
-	switch (dir)
+	switch (dir)// посоки на контролите
 	{
 	case UP: y--;
 		break;
@@ -134,7 +136,8 @@ void Logic()
 	case LEFT: x--;
 		break;
 	}
-	if (x == 0)
+
+	if (x == 0) // минаване през стени
 	{
 		x = width - 2;
 	}
@@ -150,14 +153,19 @@ void Logic()
 	{
 		y = 1;
 	}
-	for (int i = 0; i < nTail; i++)
+	for (int i = 0; i < nTail; i++)//прехапване опашка
 		if (tailX[i] == x && tailY[i] == y)
 			gameOver = true;
 
-	if (x == FX && y == FY)
+	if (x == FX && y == FY)//изяждане плод
 	{
 		FX =rand() % width;
 		FY =rand() % height;
+		if (FX == x || FY == y || FX == prevX || FY == prevY)
+		{
+			FX = rand() % width;
+			FY = rand() % height;
+		}
 		score += 10;
 		nTail+=1;
 	}
@@ -172,7 +180,7 @@ int main()
 		Input();
 		Logic();
 		Nigger();
-		Sleep(20);
+		Sleep(30);
 	} while (!gameOver);
 	if (gameOver == true)
 	{
