@@ -2,12 +2,13 @@
 #include <iostream>
 #include <windows.h>
 using namespace std;
-const int width = 22;
-const int height = 22;
-int x, y, FX, FY, score;
+const int width = 20;
+const int height = 20;
+int x, y, FX, FY, score, a;
 int tailX[100], tailY[100];
 int nTail;
 bool printed = 0;
+char c;
 enum eDirection { STOP = 0, UP, LEFT, RIGHT, DOWN };
 eDirection dir;
 bool gameOver;
@@ -32,57 +33,56 @@ void Nigger()
 void Draw()
 {
 	system("cls");
-	cout << "-------------------" << endl;
-	cout << "----Lobo i Andi----" << endl << "---Big time zmiq---" << endl;
-	cout << "-------------------" << endl;
+	cout << "WASD to move, X to end game!\n";
+	cout << "Press P to pause!\n";
 	for (int i = 0; i < width; i++)
 	{
-		cout << "0";
+		cout << "0 ";
 	}
 	cout << endl;
 
 	for (int i = 0; i < height - 2; i++)
 	{
-		cout << '0';
+		cout << "0 ";
 		for (int j = 0; j < width - 2; j++)
 		{
 
 			if (i + 1 == y && j + 1 == x)
 			{
-			cout << "O";
+				cout << "O ";
 			}
 			else if (i + 1 == FY && j + 1 == FX)
 			{
-				cout << "#";
+				cout << "# ";
 			}
-            else 
+			else
 			{
 				bool printed = 0;
 				for (int k = 0; k < nTail; k++)
 				{
-					if (tailX[k] == j+1 && tailY[k] == i+1)
+					if (tailX[k] == j + 1 && tailY[k] == i + 1)
 					{
-						cout << "o";
+						cout << "o ";
 						printed = true;
 					}
 				}
 				if (!printed)
-					cout << " ";
+					cout << "  ";
 
 			}
 
 		}
-		cout << '0' << endl;
+		cout << "0 " << endl;
 	}
 
 	for (int i = 0; i < width; i++)
 	{
-		cout << "0";
+		cout << "0 ";
 	}
-	cout << endl << "WASD to move, X to end game!";
-	cout << endl << "Your score is: " << score << "! "<< endl;
-	cout << "Fruit X: "<<  FX << ". " << endl << "Fruit Y: " << FY << ". " << endl;
-	
+
+	cout << endl << "Your score is: " << score << endl;
+	cout << "Fruit X: " << FX << endl << "Fruit Y: " << FY << endl;
+
 }
 void Input()
 {
@@ -102,10 +102,12 @@ void Input()
 		case 'w': if (dir != DOWN || dir == STOP)
 			dir = UP;
 			break;
+		case 'p': _getch();
+			
+
+			break;
 		case 'x': gameOver = true;
 			break;
-		//case 'p': dir = STOP;
-			//break;
 		}
 	}
 }
@@ -125,7 +127,7 @@ void Logic()
 		prevX = prev2X;
 		prevY = prev2Y;
 	}
-	switch (dir)// посоки на контролите
+	switch (dir)
 	{
 	case UP: y--;
 		break;
@@ -135,9 +137,10 @@ void Logic()
 		break;
 	case LEFT: x--;
 		break;
+	
 	}
-
-	if (x == 0) // минаване през стени
+	
+	if (x == 0)
 	{
 		x = width - 2;
 	}
@@ -153,39 +156,88 @@ void Logic()
 	{
 		y = 1;
 	}
-	for (int i = 0; i < nTail; i++)//прехапване опашка
+	for (int i = 0; i < nTail; i++)
 		if (tailX[i] == x && tailY[i] == y)
 			gameOver = true;
 
-	if (x == FX && y == FY)//изяждане плод
+	if (x == FX && y == FY)
 	{
-		FX =rand() % width;
-		FY =rand() % height;
-		if (FX == x || FY == y || FX == prevX || FY == prevY)
-		{
-			FX = rand() % width;
-			FY = rand() % height;
-		}
+		FX = rand() % width;
+		FY = rand() % height;
 		score += 10;
-		nTail+=1;
+		nTail += 1;
 	}
-} 
+}
+void StartScreen()
+{
+
+	if (_kbhit)
+	{
+		c = _getch();
+		system("cls");
+		switch (c)
+		{
+		case 'w':
+			cout << "\t---------------" << endl << "\t--Lobo i Andi--" << endl << "\t-Big time zmiq-" << endl << "\t---------------" << endl << "\n\n\t>START<" << "\n\tEXIT";
+			a = 0;
+			break;
+		case 's':
+			cout << "\t---------------" << endl << "\t--Lobo i Andi--" << endl << "\t-Big time zmiq-" << endl << "\t---------------" << endl << "\n\n\tSTART" << "\n\t>EXIT<";
+			a = 1;
+			break;
+		case '\r':
+			if (a == 0)
+			{
+				a = 2;
+			}
+			if (a == 1)
+			{
+				a = 2;
+				gameOver = true;
+			}
+		}
+	}
+}
+void LoseScreen()
+{
+	system("CLS");
+	cout << "Better luck next time, buddy Ї\\_( :) )_/Ї\n";
+	cout << "Press Space to Restart! \n" << "Press X to exit! \n";
+}
 int main()
 {
-	
+	cout << "\t---------------" << endl << "\t--Lobo i Andi--" << endl << "\t-Big time zmiq-" << endl << "\t---------------" << endl << "\n\n\t>START<" << "\n\tEXIT";
 	Setup();
+	while (a != 2)
+	{
+		StartScreen();
+	}
 	do
 	{
 		Draw();
 		Input();
 		Logic();
 		Nigger();
-		Sleep(30);
+		Sleep(20);
+		if (gameOver)
+		{
+			system("cls");
+			LoseScreen();
+			if (_getch() == ' ')
+			{
+				gameOver = false;
+
+				nTail = 0;
+				score = 0;
+				Setup();
+			}
+		}
 	} while (!gameOver);
+
 	if (gameOver == true)
 	{
-		cout << "Game over!" << endl;
+		LoseScreen();
 	}
-	
+
 	return 0;
 }
